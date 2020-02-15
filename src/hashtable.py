@@ -51,40 +51,63 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if not self.storage[self._hash_mod(key)]:
+          self.storage[self._hash_mod(key)] = LinkedPair(key, value)
+        else:
+          node = LinkedPair(key, value)
+          node.next = self.storage[self._hash_mod(key)]
+          self.storage[self._hash_mod(key)] = node
 
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
-        Fill this in.
         '''
-        pass
+        if not self.storage[self._hash_mod(key)]:
+          print("No value here.")
+        else:
+          head = self.storage[self._hash_mod(key)] 
+          if not head.next:
+            self.storage[self._hash_mod(key)] = None
+          # next value so we know that we are dealing with a linked list
+          else:
+            if head.key == key:
+              self.storage[self._hash_mod(key)] = head.next
+            else: 
+              prev = head
+              current = prev.next 
+              while current: 
+                if current.key == key:
+                  prev.next = current.next
+                current = current.next
 
 
     def retrieve(self, key):
-        '''
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Fill this in.
-        '''
-        pass
-
+        if not self.storage[self._hash_mod(key)]:
+          return None
+        else:
+          current = self.storage[self._hash_mod(key)]  
+          while current: 
+            if current.key == key:
+              return current.value
+            current = current.next
 
     def resize(self):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
-        Fill this in.
         '''
-        pass
+        new_hash = HashTable(self.capacity * 2)
+        for node in self.storage:
+          if node:
+            current = node 
+            while current:
+              new_hash.insert(current.key, current.value)
+              current = current.next
+        self.storage = new_hash.storage
+        self.capacity = new_hash.capacity
 
 
 
